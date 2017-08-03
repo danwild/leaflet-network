@@ -1,0 +1,18 @@
+{
+  "name": "leaflet-network",
+  "version": "0.0.1",
+  "description": "",
+  "main": "format-sites.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "d3": "^4.10.0",
+    "jquery": "^2.2.4",
+    "leaflet": "^0.7.7",
+    "underscore": "^1.8.3"
+  }
+}
