@@ -10,9 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "d3": "^4.10.0",
+    "d3": "3.5.17",
     "jquery": "^2.2.4",
-    "leaflet": "^0.7.7",
+    "leaflet": "^1.1.0",
     "underscore": "^1.8.3"
   }
 }
