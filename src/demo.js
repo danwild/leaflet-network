@@ -15,15 +15,35 @@ $(document).ready(function(){
 
 	function init(data){
 
-		var map = L.map('map').setView([-25, 134], 5);
-		L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+		var canvas = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
 			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
 			subdomains: 'abcd',
 			maxZoom: 19
-		}).addTo(map);
+		});
 
-		LeafletNetwork.init(map, data);
+		var baseLayers = {
+			"Grey Canvas": canvas
+		};
+
+		var map = L.map('map', {
+			layers: [ canvas ]
+		});
+
+		map.setView([-25, 134], 5);
+		//var map = L.map('map').setView([-25, 134], 5);
+
+
+		var layerControl = L.control.layers(baseLayers);
+		layerControl.addTo(map);
+
+		var networkLayer = L.networkLayer({
+			data: data
+		});
+
+
+		layerControl.addOverlay(networkLayer, 'Network Example');
 
 	}
+
 
 });
