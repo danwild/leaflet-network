@@ -1,14 +1,29 @@
 {
 	"name": "leaflet-network",
-	"version": "0.0.2",
-	"description": "",
+	"version": "0.0.3",
+	"description": "Leaflet plugin to visualise arbitrary network connectivity between spatial data points",
 	"main": "dist/leaflet-network.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"keywords": [],
-	"author": "",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/danwild/leaflet-network.git"
+	},
+	"keywords": [
+		"leaflet",
+		"network",
+		"connectivity",
+		"d3",
+		"visualisation",
+		"visualization"
+	],
+	"author": "danwild@y7mail.com",
 	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/danwild/leaflet-network/issues"
+	},
+	"homepage": "https://github.com/danwild/leaflet-network#readme",
 	"dependencies": {
 		"d3": "3.5.17",
 		"leaflet": "^1.1.0"
