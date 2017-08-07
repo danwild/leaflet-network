@@ -1,14 +1,14 @@
 {
 	"name": "leaflet-network",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "",
-	"main": "format-sites.js",
+	"main": "dist/leaflet-network.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC",
+	"license": "MIT",
 	"dependencies": {
 		"d3": "3.5.17",
 		"leaflet": "^1.1.0"

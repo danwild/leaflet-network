@@ -39,6 +39,11 @@ $(document).ready(function(){
 
 		// add layer as an overlay
 		layerControl.addOverlay(networkLayer, 'Network Example');
+
+		// example of changin displayMode option
+		$('input[type=radio][name=mode]').change(function(){
+			networkLayer.setDisplayMode(this.value);
+		});
 	}
 
 

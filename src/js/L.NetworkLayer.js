@@ -1,5 +1,7 @@
 L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
+	/*------------------------------------ LEAFLET CONFIG ------------------------------------------*/
+
 	options: {
 		data: null,
 		displayMode: 'SOURCE'
@@ -69,9 +71,15 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			});
 
 		this._map = map;
-		this._map.on("moveend", this.update, this);
+		this._map.on("moveend viewreset", this.update, this);
 		this.update();
 	},
+
+	onRemove: function(map) {
+		this._mapSvg.removeFrom(map);
+	},
+
+	/*------------------------------------ PUBLIC METHODS ------------------------------------------*/
 
 	update: function() {
 		console.log('update');
@@ -95,13 +103,19 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		}
 	},
 
-	onRemove: function(map) {
-		this._mapSvg.removeFrom(map);
+	setDisplayMode: function(mode){
+		this.options.displayMode = mode;
+		this.update();
+	},
+
+	setTarget: function(id){
+		this._targetId = id;
+		this.update();
 	},
 
 	setData: function setData(data) {
 		this.options.data = data;
-		this._drawConnections();
+		this.update();
 	},
 
 	/*------------------------------------ PRIVATE ------------------------------------------*/
