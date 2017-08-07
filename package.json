@@ -1,42 +1,42 @@
 {
-	"name": "leaflet-network",
-	"version": "0.0.4",
-	"description": "Leaflet plugin to visualise arbitrary network connectivity between spatial data points",
-	"main": "dist/leaflet-network.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/danwild/leaflet-network.git"
-	},
-	"keywords": [
-		"leaflet",
-		"network",
-		"connectivity",
-		"d3",
-		"visualisation",
-		"visualization"
-	],
-	"author": "danwild@y7mail.com",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/danwild/leaflet-network/issues"
-	},
-	"homepage": "https://github.com/danwild/leaflet-network#readme",
-	"dependencies": {
-		"d3": "3.5.17",
-		"leaflet": "^1.1.0"
-	},
-	"devDependencies": {
-		"jquery": "^2.2.4",
-		"babel-preset-es2015": "^6.9.0",
-		"gulp": "^3.9.1",
-		"gulp-babel": "^6.1.2",
-		"gulp-concat": "^2.6.0",
-		"gulp-concat-css": "^2.3.0",
-		"gulp-cssnano": "^2.1.2",
-		"gulp-rename": "^1.2.2",
-		"gulp-uglify": "^1.5.4"
-	}
+  "name": "leaflet-network",
+  "version": "0.0.5",
+  "description": "Leaflet plugin to visualise arbitrary network connectivity between spatial data points",
+  "main": "dist/leaflet-network.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danwild/leaflet-network.git"
+  },
+  "keywords": [
+    "leaflet",
+    "network",
+    "connectivity",
+    "d3",
+    "visualisation",
+    "visualization"
+  ],
+  "author": "danwild@y7mail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danwild/leaflet-network/issues"
+  },
+  "homepage": "https://github.com/danwild/leaflet-network#readme",
+  "dependencies": {
+    "d3": "^4.10.0",
+    "leaflet": "^1.1.0"
+  },
+  "devDependencies": {
+    "jquery": "^2.2.4",
+    "babel-preset-es2015": "^6.9.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-concat-css": "^2.3.0",
+    "gulp-cssnano": "^2.1.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.4"
+  }
 }

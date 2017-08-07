@@ -30,7 +30,8 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 		// TODO
 		// scale matrix values to a consistent range, this needs work
-		this._linearScale = d3.scale.linear().domain([0, 100]).range([1, 5]);
+		console.log(d3);
+		this._linearScale = d3.scaleLinear().domain([0, 100]).range([1, 5]);
 
 		// initialize the SVG layer
 		this._mapSvg = L.svg();
@@ -58,7 +59,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 			// set circles all inactive style, set this active
 			self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", 5);
-			d3.select(this).style({ opacity: '0.8' }).attr("r", 10);
+			d3.select(this).style('opacity', '0.8').attr("r", 10);
 
 			// redraws ALL lines
 			// TODO can probably do this more efficiently, e.g. just update style

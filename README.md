@@ -66,7 +66,10 @@ var data = [
 ```
 
 ## todo
-* update to d3 v4
+* better visualisation of connection weight (scale should auto fit to data)
+* circle points could derive radius size from source/sink score
+* better parameterization of styling etc.
+* tooltip?
 
 ## shout outs
 
