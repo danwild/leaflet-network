@@ -4,14 +4,15 @@
 <head>
 	<title>Leaflet Network</title>
 
-	<!--leaflet v1.1.0-->
-	<link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css"	/>
-	<script src="node_modules/leaflet/dist/leaflet.js"></script>
+	<!--dependencies-->
+	<link rel="stylesheet" href="/leaflet-network/node_modules/leaflet/dist/leaflet.css" />
+	<script src="/leaflet-network/node_modules/leaflet/dist/leaflet.js"></script>
+	<script src="/leaflet-network/node_modules/d3/d3.min.js"></script>
+	<script src="/leaflet-network/dist/leaflet-network.js"></script>
 
-	<script src="node_modules/d3/d3.min.js"></script>
-	<script src="node_modules/underscore/underscore-min.js"></script>
-	<script src="data/mock.js"></script>
-	<script src="node_modules/jquery/dist/jquery.min.js"></script>
+	<!--demo stuff-->
+	<script src="/leaflet-network/node_modules/jquery/dist/jquery.min.js"></script>
+	<script src="/leaflet-network/demo/demo.js"></script>
 
 </head>
 <body>
@@ -22,10 +23,7 @@
 	Both/Bidirectional: <input class="mode-ctrl" type="radio" name="mode" value="BOTH"><br/>
 	Any: <input class="mode-ctrl" type="radio" name="mode" value="ANY" checked>
 </div>
-<div id="map" style="width: 100%; height: 800px"></div>
-
-<script src="src/L.NetworkLayer.js"></script>
-<script src="src/demo.js"></script>
+<div id="map" style="width: 100%; height: 900px"></div>
 
 </body>
 </html>

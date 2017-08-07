@@ -7,6 +7,10 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 	_map: null,
 	_mapSvg: null, // our root SVG layer
+	_svgGroup1: null,
+	_svgGroup2: null,
+	_targetId: null,
+	_linearScale: null,
 
 	initialize: function(options) {
 		L.setOptions(this, options);
@@ -14,15 +18,15 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 	onAdd: function(map) {
 
+		var self = this;
 		var data = this.options.data;
 
 		// the target/currently inspected site ID, and mode of inspection
-		var targetId = null;
-		//var displayMode = 'ANY';
+		this._targetId = null;
 
 		// TODO
 		// scale matrix values to a consistent range, this needs work
-		linearScale = d3.scale.linear().domain([0,100]).range([1,5]);
+		this._linearScale = d3.scale.linear().domain([0,100]).range([1,5]);
 
 		// initialize the SVG layer
 		this._mapSvg = L.svg();
@@ -33,105 +37,112 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 		// leaflet svg has pointer events disabled by default..
 		svg.attr("pointer-events", "all");
-		this._svgGroup = svg.append("g");
-		var svgGroup = this._svgGroup; // keep a ref for when *this* context changes
-		var group2 = this._svgGroup.append("g");
+		this._svgGroup1 = svg.append("g");
+		this._svgGroup2 = this._svgGroup1.append("g");
 
 		// add a leaflet position to each site
-		_.each(data, function(site){
+		data.forEach(function(site){
 			site.properties.LatLng = new L.LatLng(site.properties.lat, site.properties.lon);
 		});
 
 		// create site circles
-		var feature = svgGroup.selectAll("circle")
-			.data(_.map(data, function(d){ return d; }))
+		this._svgGroup1.selectAll("circle")
+			.data(data.map(function(d){ return d; }))
 			.attr("class", "site")
 			.enter().append("circle")
 			.style("opacity", .5)
 			.style("cursor", "pointer")
 			.style("fill", "red")
-			.attr("r", 8)
+			.attr("r", 5)
 			.on('click', function(d){
 
 				console.log(d);
 
 				// set circles all inactive style, set this active
-				svgGroup.selectAll("circle").style("opacity", 0.5).attr("r", 5);
+				self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", 5);
 				d3.select(this).style({opacity:'0.8'}).attr("r", 10);
 
 				// redraws ALL lines
 				// TODO can probably do this more efficiently, e.g. just update style
-				targetId = d.properties.id;
-				drawConnections(targetId);
+				self._targetId = d.properties.id;
+				self._drawConnections(self._targetId);
 			});
 
-		map.on("moveend", update);
-		update();
 		this._map = map;
+		this._map.on("moveend", this.update, this);
+		this.update();
 	},
 
 	update: function() {
 		console.log('update');
-		this._drawConnections(targetId);
-		feature.attr("transform",
+		var self = this;
+		self._drawConnections(this._targetId);
+		this._svgGroup1.selectAll("circle").attr("transform",
 			function(d) {
 				return "translate("+
-					map.latLngToLayerPoint(d.properties.LatLng).x +","+
-					map.latLngToLayerPoint(d.properties.LatLng).y +")";
+					self._map.latLngToLayerPoint(d.properties.LatLng).x +","+
+					self._map.latLngToLayerPoint(d.properties.LatLng).y +")";
 			}
 		);
 	},
 
 	getPointById: function(id){
-		return _.find(data, function(site){
-			return site.properties.id == id;
-		});
+		var data = this.options.data;
+		for(var i = 0; i < data.length; i++){
+			if(id == data[i].properties.id){
+				return data[i];
+			}
+		}
 	},
 
 	onRemove: function(map) {
 		this._mapSvg.removeFrom(map);
 	},
 
-	// TODO redraw
 	setData: function setData(data) {
 		this.options.data = data;
-		drawConnections();
+		this._drawConnections();
 	},
 
 	/*------------------------------------ PRIVATE ------------------------------------------*/
 
 	_drawConnections: function(targetId){
 
-		group2.selectAll(".connection").remove();
+		var self = this;
+		var map = this._map;
+		var data = this.options.data;
+		var svgGroup2 = this._svgGroup2;
 
-		_.each(data, function(site){
+		svgGroup2.selectAll(".connection").remove();
+
+		data.forEach(function(site){
 
 			var targetPoint = map.latLngToLayerPoint(site.properties.LatLng);
-			var conKeys = _.keys(site.connections);
+			var conKeys = Object.keys(site.connections);
 
-			_.each(conKeys, function(conKey){
+			conKeys.forEach(function(conKey){
 
-				var conSite = getPointById(conKey);
+				var conSite = self.getPointById(conKey);
 				if(!conSite || !site.connections[conKey]) return;
 				var conPoint = map.latLngToLayerPoint(conSite.properties.LatLng);
 
 				var conValue = site.connections[conKey];
-				var val = parseInt(linearScale(conValue));
+				var val = parseInt(self._linearScale(conValue));
 
 				var color = 'grey';
 				var opacity = 0.2;
 
 				if(targetId){
 
-					if(visMode == 'SOURCE' && targetId == site.properties.id){
+					if(self.options.displayMode == 'SOURCE' && targetId == site.properties.id){
 						color = 'red';
 						opacity = 0.8;
 					}
-					else if(visMode == 'SINK' && targetId == conKey){
+					else if(self.options.displayMode == 'SINK' && targetId == conKey){
 						color = 'green';
 						opacity = 0.8;
 					}
-					else if(visMode == 'ANY') {
+					else if(self.options.displayMode == 'ANY') {
 						if(targetId == site.properties.id){
 							color = 'red';
 							opacity = 0.8;
@@ -141,7 +152,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 							opacity = 0.8;
 						}
 					}
-					else if(visMode == 'BOTH') {
+					else if(self.options.displayMode == 'BOTH') {
 
 						if(targetId == site.properties.id){
 							color = 'red';
@@ -156,7 +167,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 				}
 
-				var line = group2.append("line")
+				svgGroup2.append("line")
 					.attr("class", "connection")
 					.attr("x1", targetPoint.x)
 					.attr("y1", targetPoint.y)
@@ -168,9 +179,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 			});
 		});
-
 	}
-
 
 });
 
