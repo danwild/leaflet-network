@@ -1,6 +1,6 @@
-# leaflet-network [![NPM version][npm-image]][npm-url]
+# leaflet-network [![npm version][npm-image]][npm-url]
 
-Leaflet plugin to visualise network connectivity between spatial data points.
+Leaflet plugin to visualise (weighted) network connectivity between spatial data points.
 It uses [d3.js v3](http://d3js.org) to visualise the network connections on a `L.SVG` layer.
 
 This plugin only supports Leaflet ^v1.0.0.
