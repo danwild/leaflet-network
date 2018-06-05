@@ -5,11 +5,8 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	options: {
 		data: null,
 		displayMode: 'SOURCE',
-
-		// TODO fix merge options.., document, implement
 		scaleDomain: null,
-		scaleRange: [1, 100],
-
+		scaleRange: [1, 5],
 		onMouseEnterNode: null,
 		onMouseLeaveNode: null,
 		onMouseEnterLine: null,
@@ -31,10 +28,6 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 		var self = this;
 
-		console.log('this.options');
-		console.log(this.options);
-
-
 		// delete self-connections
 		var data = this.options.data.map(function(d){
 			delete d.connections[d.properties.id];
@@ -47,7 +40,6 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		// calc domain range if not provided in options
 		var scaleDomain;
 		if(this.options.scaleDomain){
-			console.log('use provided domain option');
 			scaleDomain = this.options.scaleDomain;
 		} else {
 			// get an array of all connections
@@ -55,8 +47,6 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			data.forEach(function(d){ connections = connections.concat(Object.values(d.connections)); });
 			var min = d3.min(connections);
 			var max = d3.max(connections);
-
-			console.log('auto calc domain: '+min + ' - '+max);
 			scaleDomain = [min, max];
 		}
 
@@ -89,9 +79,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			.style("fill", "red")
 			.attr("r", 5)
 			.on('click', function(d){
-
 				console.log(d);
-
 				// set circles all inactive style, set this active
 				self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", 5);
 				d3.select(this).style('opacity','0.8').attr("r", 10);
@@ -116,7 +104,6 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	/*------------------------------------ PUBLIC METHODS ------------------------------------------*/
 
 	update: function() {
-		console.log('update');
 		var self = this;
 		self._drawConnections(this._targetId);
 		this._svgGroup1.selectAll("circle").attr("transform",
@@ -224,7 +211,6 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					.attr("stroke-width", val)
 					.attr("stroke-opacity", opacity)
 					.attr("stroke", color);
-
 			});
 		});
 	}
