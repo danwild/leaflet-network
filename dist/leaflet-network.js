@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
@@ -6,7 +6,16 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 	options: {
 		data: null,
-		displayMode: 'SOURCE'
+		displayMode: 'SOURCE',
+
+		// TODO fix merge options.., document, implement
+		scaleDomain: null,
+		scaleRange: [1, 100],
+
+		onMouseEnterNode: null,
+		onMouseLeaveNode: null,
+		onMouseEnterLine: null,
+		onMouseLeaveLine: null
 	},
 
 	_map: null,
@@ -23,15 +32,38 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	onAdd: function onAdd(map) {
 
 		var self = this;
-		var data = this.options.data;
+
+		console.log('this.options');
+		console.log(this.options);
+
+		// delete self-connections
+		var data = this.options.data.map(function (d) {
+			delete d.connections[d.properties.id];
+			return d;
+		});
 
 		// the target/currently inspected site ID, and mode of inspection
 		this._targetId = null;
 
-		// TODO
-		// scale matrix values to a consistent range, this needs work
-		console.log(d3);
-		this._linearScale = d3.scaleLinear().domain([0, 100]).range([1, 5]);
+		// calc domain range if not provided in options
+		var scaleDomain;
+		if (this.options.scaleDomain) {
+			console.log('use provided domain option');
+			scaleDomain = this.options.scaleDomain;
+		} else {
+			// get an array of all connections
+			var connections = [];
+			data.forEach(function (d) {
+				connections = connections.concat(Object.values(d.connections));
+			});
+			var min = d3.min(connections);
+			var max = d3.max(connections);
+
+			console.log('auto calc domain: ' + min + ' - ' + max);
+			scaleDomain = [min, max];
+		}
+
+		this._linearScale = d3.scaleLinear().domain(scaleDomain).range(this.options.scaleRange);
 
 		// initialize the SVG layer
 		this._mapSvg = L.svg();
@@ -65,7 +97,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			// TODO can probably do this more efficiently, e.g. just update style
 			self._targetId = d.properties.id;
 			self._drawConnections(self._targetId);
-		});
+		}).on('mouseenter', this.options.onMouseEnterNode).on('mouseleave', this.options.onMouseLeaveNode);
 
 		this._map = map;
 		this._map.on("moveend viewreset", this.update, this);

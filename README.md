@@ -1,4 +1,4 @@
-# leaflet-network [![npm version][npm-image]][npm-url]
+# leaflet-network [![npm version][npm-image]][npm-url] [![NPM Downloads][npm-downloads-image]][npm-url]
 
 Leaflet plugin to visualise (weighted) network connectivity between spatial data points.
 It uses [d3.js v4](http://d3js.org) to visualise the network connections on a `L.SVG` layer.
@@ -14,7 +14,7 @@ This plugin only supports Leaflet ^v1.0.0.
 
 ## usage
 
-Init plugin with map and data:
+Init plugin with map and data (see gh-pages branch for full demo):
 
 ```javascript
 // create a basemap
@@ -37,7 +37,26 @@ layerControl.addTo(map);
 
 // init the network layer
 var networkLayer = L.networkLayer({
-	data: data
+
+	// see expected data format below
+	data: data,
+
+	// domain is the min/max range of values within the input data, defaults to auto fit data
+	scaleDomain: [0, 100],
+
+	// range the the min/max range we should scale the data to, defaults to [1, 5]
+	scaleRange: [1, 5],
+
+	// callback function for mouseenter event on node, receives target node
+	onMouseEnterNode: function(node){
+		// e.g. set a tooltip
+	},
+
+	// callback function for mouseleave event on node, receives target node
+    onMouseLeaveNode: function(node){
+        // e.g. remove a tooltip
+    }
+
 });
 
 // add layer as an overlay
@@ -66,10 +85,8 @@ var data = [
 ```
 
 ## todo
-* better visualisation of connection weight (scale should auto fit to data)
-* circle points could derive radius size from source/sink score
+* circle points could derive radius size from source/sink score?
 * better parameterization of styling etc.
-* tooltip?
 
 ## shout outs
 
@@ -81,3 +98,4 @@ MIT License (MIT)
 
 [npm-image]: https://badge.fury.io/js/leaflet-network.svg
 [npm-url]: https://www.npmjs.com/package/leaflet-network
+[npm-downloads-image]: https://img.shields.io/npm/dt/leaflet-network.svg
