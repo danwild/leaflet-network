@@ -49,12 +49,12 @@ var networkLayer = L.networkLayer({
 
 	// callback function for mouseenter event on node, receives target node
 	onMouseEnterNode: function(node){
-		// e.g. set a tooltip
+	  // e.g. set a tooltip
 	},
 
-	// callback function for mouseleave event on node, receives target node
+    // callback function for mouseleave event on node, receives target node
     onMouseLeaveNode: function(node){
-        // e.g. remove a tooltip
+      // e.g. remove a tooltip
     }
 
 });
