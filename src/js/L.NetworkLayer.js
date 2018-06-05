@@ -57,7 +57,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		this._mapSvg.addTo(map);
 
 		// we simply pick up the SVG from the map object
-		var svg = d3.select("#map").select("svg");
+		var svg = d3.select(`#${map.getContainer().id}`).select("svg");
 
 		// leaflet svg has pointer events disabled by default..
 		svg.attr("pointer-events", "all");
