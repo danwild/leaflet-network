@@ -34,7 +34,20 @@ $(document).ready(function(){
 
 		// init the network layer
 		var networkLayer = L.networkLayer({
-			data: data
+
+			data: data,
+
+			onMouseEnterNode: function(node){
+				var count = Object.values(node.connections).filter(v => v).length;
+				var content = `ID: ${node.properties.id}, Source for: ${count}`;
+				$("#tooltip").html(content);
+				$("#tooltip").show();
+			},
+
+			onMouseLeaveNode: function(node){
+				$("#tooltip").html();
+				$("#tooltip").hide();
+			}
 		});
 
 		// add layer as an overlay
