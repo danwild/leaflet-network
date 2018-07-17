@@ -88,10 +88,10 @@ var networkLayer = L.networkLayer({
 	  // e.g. set a tooltip
 	},
 
-    // callback function for mouseleave event on node, receives target node
-    onMouseLeaveNode: function(node){
-      // e.g. remove a tooltip
-    }
+	// callback function for mouseleave event on node, receives target node
+	onMouseLeaveNode: function(node){
+	  // e.g. remove a tooltip
+	}
 
 });
 
