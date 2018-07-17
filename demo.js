@@ -36,6 +36,7 @@ $(document).ready(function(){
 		var networkLayer = L.networkLayer({
 
 			data: data,
+			globalWeightMode: false,
 
 			onMouseEnterNode: function(node){
 				var count = Object.values(node.connections).filter(v => v).length;
@@ -47,6 +48,10 @@ $(document).ready(function(){
 			onMouseLeaveNode: function(node){
 				$("#tooltip").html();
 				$("#tooltip").hide();
+			},
+
+			onMouseEnterLine: function(){
+				console.log('Connection weight: ' + $(this).data('weight'));
 			}
 		});
 
@@ -56,6 +61,10 @@ $(document).ready(function(){
 		// example of changin displayMode option
 		$('input[type=radio][name=mode]').change(function(){
 			networkLayer.setDisplayMode(this.value);
+		});
+
+		$('#clear').click(() => {
+			networkLayer.setTarget(null);
 		});
 	}
 
