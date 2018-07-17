@@ -1,7 +1,13 @@
 # leaflet-network [![npm version][npm-image]][npm-url] [![NPM Downloads][npm-downloads-image]][npm-url]
 
-Leaflet plugin to visualise (weighted) network connectivity between spatial data points.
+**ALPHA** leaflet plugin to visualise (weighted) network connectivity between spatial data points.
 It uses [d3.js v4](http://d3js.org) to visualise the network connections on a `L.SVG` layer.
+
+Node connectivity weights can be represented:
+- **Globally:** node connection strength scaled against all others,
+and represented by width of the connecting line (range defined via `lineWidthRange`)
+- **Locally:** node connection strength is scaled only by the connections it has using the current `displayMode`,
+and represented by color of the connecting lines (range defined via `localColorScale`).
 
 This plugin only supports Leaflet ^v1.0.0.
 
@@ -41,11 +47,22 @@ var networkLayer = L.networkLayer({
 	// see expected data format below
 	data: data,
 
-	// domain is the min/max range of values within the input data, defaults to auto fit data
+	// domain is the min/max range of values within the input data, defaults to auto fit to data
 	scaleDomain: [0, 100],
 
-	// range the the min/max range we should scale the data to, defaults to [1, 5]
-	scaleRange: [1, 5],
+	// pixel range the the min/max range we should scale the data to, defaults to [1, 5]
+	lineWidthRange: [1, 5],
+
+	// if true, connection weight is calculated in global scope
+	// (i.e. against all connections) and is represented by line width
+	// if false, connection weight is calculated using the local scope of the active node (scale is fitted to a
+	// single nodes own connection weights), and is represented by line color
+	globalWeightMode: true,
+
+	// the color scale to use when globalWeightMode=false
+	// note that when used with displayMode=BOTH, SOURCE/SINK connections will be
+	// displayed on independent scales (to unify scales, use displayMode=ANY).
+	localColorScale: ["green", "yellow", "red"],
 
 	// callback function for mouseenter event on node, receives target node
 	onMouseEnterNode: function(node){
@@ -70,8 +87,10 @@ layerControl.addOverlay(networkLayer, 'Network Example');
 |`update`||trigger a redraw of all elements using current target|
 |`setData`|`data: {Object}`|update the layer with new data|
 |`setTarget`|`id: {String}`|Set the active target node by id|
-|`setDisplayMode`|`mode: {String}`|one of: `SOURCE`, `SINK`, `ALL`, `BOTH`|
+|`setDisplayMode`|`mode: {String}`|one of: `SOURCE`, `SINK`, `ANY`, `BOTH`|
 |`getPointById`|`id: {String}`|Get a node by id|
+|`isActive`||Check if layer is active on the map|
+
 
 ## data format
 
@@ -92,10 +111,6 @@ var data = [
   {...}
 ]
 ```
-
-## todo
-* better representation of connection strength
-* better parameterization of styling etc.
 
 ## shout outs
 
