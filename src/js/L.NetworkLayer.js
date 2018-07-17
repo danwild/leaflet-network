@@ -7,8 +7,14 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		displayMode: 'ANY',
 		globalWeightMode: true,
 		localColorScale: ['green', 'red'],
+		sourceColor: 'red',
+		sinkColor: 'green',
+		allColor: 'blue',
 		scaleDomain: null,
 		lineWidthRange: [1, 5],
+		nodeFillColor: 'red',
+		nodeOpacity: 0.5,
+		nodeRadius: 5,
 		onMouseEnterNode: null,
 		onMouseLeaveNode: null,
 		onMouseEnterLine: null,
@@ -76,10 +82,10 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			.data(data.map(function(d){ return d; }))
 			.attr("class", "site")
 			.enter().append("circle")
-			.style("opacity", .5)
+			.style("opacity", self.options.nodeOpacity)
 			.style("cursor", "pointer")
-			.style("fill", "red")
-			.attr("r", 5)
+			.style("fill", self.options.nodeFillColor)
+			.attr("r", self.options.nodeRadius)
 			.on('click', function(d){
 				console.log(d);
 				// set circles all inactive style, set this active
@@ -112,7 +118,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	update: function() {
 		var self = this;
 		self._drawConnections(this._targetId);
-		if (!this._targetId) self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", 5);
+		if (!this._targetId) self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", self.options.nodeRadius);
 		this._svgGroup1.selectAll("circle").attr("transform",
 			function(d) {
 				return "translate("+
@@ -231,39 +237,31 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				// global scope weighting
 				} else if (targetId && self.options.globalWeightMode) {
 
-					// sources are red
 					if(self.options.displayMode == 'SOURCE' && targetId == site.properties.id){
-						color = 'red';
+						color = self.options.sourceColor;
 						opacity = 0.8;
 					}
 
-					// sinks are green
 					else if(self.options.displayMode == 'SINK' && targetId == conKey){
-						color = 'green';
+						color = self.options.sinkColor;
 						opacity = 0.8;
 					}
 
-					// if any, default to red
 					else if(self.options.displayMode == 'ANY') {
-						if(targetId == site.properties.id){
-							color = 'red';
-							opacity = 0.8;
-						}
-						if(targetId == conKey){
-							color = 'red';
+						if(targetId == site.properties.id || targetId == conKey){
+							color = self.options.allColor;
 							opacity = 0.8;
 						}
 					}
 
-					// if sources AND sinks, check which node we have
 					else if(self.options.displayMode == 'BOTH') {
 
 						if(targetId == site.properties.id){
-							color = 'red';
+							color = self.options.sourceColor;
 							opacity = 0.8;
 						}
 						if(targetId == conKey){
-							color = 'green';
+							color = self.options.sinkColor;
 							opacity = 0.8;
 						}
 					}

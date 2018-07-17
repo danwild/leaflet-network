@@ -72,6 +72,17 @@ var networkLayer = L.networkLayer({
 	// displayed on independent scales (to unify scales, use displayMode=ANY).
 	localColorScale: ["green", "yellow", "red"],
 
+	// color for connections when not using local scaled colors
+	// i.e. globalWeightMode=true
+	sourceColor: 'red',
+	sinkColor: 'green',
+	allColor: 'blue',
+
+	// styling options for node circles
+	nodeFillColor: 'red',
+	nodeRadius: 5,
+	nodeOpacity: 0.5,
+
 	// callback function for mouseenter event on node, receives target node
 	onMouseEnterNode: function(node){
 	  // e.g. set a tooltip
