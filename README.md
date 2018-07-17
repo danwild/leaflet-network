@@ -63,6 +63,16 @@ var networkLayer = L.networkLayer({
 layerControl.addOverlay(networkLayer, 'Network Example');
 ```
 
+## public methods
+
+|method|params|description|
+|---|---|---|
+|`update`||trigger a redraw of all elements using current target|
+|`setData`|`data: {Object}`|update the layer with new data|
+|`setTarget`|`id: {String}`|display the particles at the given frame index|
+|`setDisplayMode`|`mode: {String}`|one of: `SOURCE`, `SINK`, `ALL`, `BOTH`|
+|`getPointById`|`id: {String}`|Get a node by id|
+
 ## data format
 
 ```javascript

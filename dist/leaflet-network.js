@@ -99,14 +99,50 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 	/*------------------------------------ PUBLIC METHODS ------------------------------------------*/
 
+	/**
+  * Trigger a redraw of all elements using current target
+  */
 	update: function update() {
 		var self = this;
+		self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", 5);
 		self._drawConnections(this._targetId);
 		this._svgGroup1.selectAll("circle").attr("transform", function (d) {
 			return "translate(" + self._map.latLngToLayerPoint(d.properties.LatLng).x + "," + self._map.latLngToLayerPoint(d.properties.LatLng).y + ")";
 		});
 	},
 
+	/**
+  * Update the layer with new data
+  * @param {Object} data
+  */
+	setData: function setData(data) {
+		this.options.data = data;
+		this.update();
+	},
+
+	/**
+  * Set the active target node by id
+  * @param {String} id
+  */
+	setTarget: function setTarget(id) {
+		this._targetId = id;
+		this.update();
+	},
+
+	/**
+  * Set the layer display mode (triggers update)
+  * @param mode {String} One of: ['SOURCE', 'SINK', 'ALL', 'BOTH']
+  */
+	setDisplayMode: function setDisplayMode(mode) {
+		this.options.displayMode = mode;
+		this.update();
+	},
+
+	/**
+  * Get a node by id
+  * @param id {String}
+  * @returns {Object}
+  */
 	getPointById: function getPointById(id) {
 		var data = this.options.data;
 		for (var i = 0; i < data.length; i++) {
@@ -114,21 +150,6 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				return data[i];
 			}
 		}
-	},
-
-	setDisplayMode: function setDisplayMode(mode) {
-		this.options.displayMode = mode;
-		this.update();
-	},
-
-	setTarget: function setTarget(id) {
-		this._targetId = id;
-		this.update();
-	},
-
-	setData: function setData(data) {
-		this.options.data = data;
-		this.update();
 	},
 
 	/*------------------------------------ PRIVATE ------------------------------------------*/
