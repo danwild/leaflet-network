@@ -83,6 +83,11 @@ var networkLayer = L.networkLayer({
 	nodeRadius: 5,
 	nodeOpacity: 0.5,
 
+	// styling for connection lines
+	lineOpacity: 0.8,
+	lineWidth: 2,
+	lineWidthActive: 2,
+
 	// callback function for mouseenter event on node, receives target node
 	onMouseEnterNode: function(node){
 	  // e.g. set a tooltip

@@ -19,6 +19,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		nodeRadius: 5,
 		lineOpacity: 0.8,
 		lineWidth: 2,
+		lineWidthActive: 2,
 		onMouseEnterNode: null,
 		onMouseLeaveNode: null,
 		onMouseEnterLine: null,
@@ -266,9 +267,8 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				// draw inactive of globally weighted line
 				var targetPoint = map.latLngToLayerPoint(site.properties.LatLng);
 				var conPoint = map.latLngToLayerPoint(conSite.properties.LatLng);
-				var lineWidth = parseInt(self._linearWidthScale(conValue));
 
-				svgGroup2.append("line").attr("class", "connection").attr("x1", targetPoint.x).attr("y1", targetPoint.y).attr("x2", conPoint.x).attr("y2", conPoint.y).attr("stroke-width", self.options.lineWidth).attr("stroke-opacity", opacity).attr("stroke", color);
+				svgGroup2.append("line").attr("class", "connection").attr("x1", targetPoint.x).attr("y1", targetPoint.y).attr("x2", conPoint.x).attr("y2", conPoint.y).attr("stroke-width", opacity === 0.2 ? self.options.lineWidth : self.options.lineWidthActive).attr("stroke-opacity", opacity).attr("stroke", color);
 			});
 		});
 
@@ -327,7 +327,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				var targetPoint = self._map.latLngToLayerPoint(node.properties.LatLng);
 				var conPoint = self._map.latLngToLayerPoint(conSite.properties.LatLng);
 
-				svgGroup.append("line").attr("class", "connection").attr("x1", targetPoint.x).attr("y1", targetPoint.y).attr("x2", conPoint.x).attr("y2", conPoint.y).attr("stroke-width", self.options.lineWidth).attr("stroke-opacity", self.options.lineOpacity).attr("stroke", colorScale(conValue)).attr("data-weight", conValue).style("cursor", "pointer").style("stroke-dasharray", dashStyle).on('mouseenter', self.options.onMouseEnterLine).on('mouseleave', self.options.onMouseLeaveLine);
+				svgGroup.append("line").attr("class", "connection").attr("x1", targetPoint.x).attr("y1", targetPoint.y).attr("x2", conPoint.x).attr("y2", conPoint.y).attr("stroke-width", self.options.lineWidthActive).attr("stroke-opacity", self.options.lineOpacity).attr("stroke", colorScale(conValue)).attr("data-weight", conValue).style("cursor", "pointer").style("stroke-dasharray", dashStyle).on('mouseenter', self.options.onMouseEnterLine).on('mouseleave', self.options.onMouseLeaveLine);
 			});
 		});
 	}
