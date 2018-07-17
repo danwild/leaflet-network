@@ -6,11 +6,17 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 	options: {
 		data: null,
-		displayMode: 'SOURCE',
+		displayMode: 'ANY',
 		globalWeightMode: true,
 		localColorScale: ['green', 'red'],
+		sourceColor: 'red',
+		sinkColor: 'green',
+		allColor: 'blue',
 		scaleDomain: null,
 		lineWidthRange: [1, 5],
+		nodeFillColor: 'red',
+		nodeOpacity: 0.5,
+		nodeRadius: 5,
 		onMouseEnterNode: null,
 		onMouseLeaveNode: null,
 		onMouseEnterLine: null,
@@ -79,7 +85,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		// create site circles
 		this._svgGroup1.selectAll("circle").data(data.map(function (d) {
 			return d;
-		})).attr("class", "site").enter().append("circle").style("opacity", .5).style("cursor", "pointer").style("fill", "red").attr("r", 5).on('click', function (d) {
+		})).attr("class", "site").enter().append("circle").style("opacity", self.options.nodeOpacity).style("cursor", "pointer").style("fill", self.options.nodeFillColor).attr("r", self.options.nodeRadius).on('click', function (d) {
 			console.log(d);
 			// set circles all inactive style, set this active
 			self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", 5);
@@ -109,7 +115,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	update: function update() {
 		var self = this;
 		self._drawConnections(this._targetId);
-		if (!this._targetId) self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", 5);
+		if (!this._targetId) self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", self.options.nodeRadius);
 		this._svgGroup1.selectAll("circle").attr("transform", function (d) {
 			return "translate(" + self._map.latLngToLayerPoint(d.properties.LatLng).x + "," + self._map.latLngToLayerPoint(d.properties.LatLng).y + ")";
 		});
@@ -121,6 +127,15 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
   */
 	setData: function setData(data) {
 		this.options.data = data;
+		if (this._active) this.update();
+	},
+
+	/**
+  * Update the layer with new options
+  * @param {Object} options
+  */
+	setOptions: function setOptions(options) {
+		L.setOptions(this, options);
 		if (this._active) this.update();
 	},
 
@@ -225,42 +240,28 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					// global scope weighting
 				} else if (targetId && self.options.globalWeightMode) {
 
-					// sources are red
 					if (self.options.displayMode == 'SOURCE' && targetId == site.properties.id) {
-						color = 'red';
+						color = self.options.sourceColor;
 						opacity = 0.8;
-					}
-
-					// sinks are green
-					else if (self.options.displayMode == 'SINK' && targetId == conKey) {
-							color = 'green';
+					} else if (self.options.displayMode == 'SINK' && targetId == conKey) {
+						color = self.options.sinkColor;
+						opacity = 0.8;
+					} else if (self.options.displayMode == 'ANY') {
+						if (targetId == site.properties.id || targetId == conKey) {
+							color = self.options.allColor;
 							opacity = 0.8;
 						}
+					} else if (self.options.displayMode == 'BOTH') {
 
-						// if any, default to red
-						else if (self.options.displayMode == 'ANY') {
-								if (targetId == site.properties.id) {
-									color = 'red';
-									opacity = 0.8;
-								}
-								if (targetId == conKey) {
-									color = 'red';
-									opacity = 0.8;
-								}
-							}
-
-							// if sources AND sinks, check which node we have
-							else if (self.options.displayMode == 'BOTH') {
-
-									if (targetId == site.properties.id) {
-										color = 'red';
-										opacity = 0.8;
-									}
-									if (targetId == conKey) {
-										color = 'green';
-										opacity = 0.8;
-									}
-								}
+						if (targetId == site.properties.id) {
+							color = self.options.sourceColor;
+							opacity = 0.8;
+						}
+						if (targetId == conKey) {
+							color = self.options.sinkColor;
+							opacity = 0.8;
+						}
+					}
 				}
 
 				// draw inactive of globally weighted line

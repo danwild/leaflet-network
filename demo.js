@@ -32,11 +32,13 @@ $(document).ready(function(){
 		var layerControl = L.control.layers();
 		layerControl.addTo(map);
 
+		var globalWeightMode = true;
+
 		// init the network layer
 		var networkLayer = L.networkLayer({
 
 			data: data,
-			globalWeightMode: false,
+			globalWeightMode: globalWeightMode,
 
 			onMouseEnterNode: function(node){
 				var count = Object.values(node.connections).filter(v => v).length;
@@ -63,8 +65,15 @@ $(document).ready(function(){
 			networkLayer.setDisplayMode(this.value);
 		});
 
+		// example clear selection
 		$('#clear').click(() => {
 			networkLayer.setTarget(null);
+		});
+
+		// example setOptions
+		$('#toggleScope').click(() => {
+			globalWeightMode = !globalWeightMode;
+			networkLayer.setOptions({ globalWeightMode: globalWeightMode });
 		});
 	}
 
