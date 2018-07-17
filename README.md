@@ -47,6 +47,14 @@ var networkLayer = L.networkLayer({
 	// see expected data format below
 	data: data,
 
+	// One of:
+	// - SOURCE: visualise connections that are downstream from the target node
+	// - SINK:   visualise connections that are upstream from the target node
+	// - ANY:    visualise any connections related to the target node (useful if not concerned with SOURCE/SINKs)
+	// - BOTH:   visualise connections that are upstream or downstream from the target node, differs to ANY as it
+	//   keeps SOURCE/SINK weightings separate, whereas ANY is a simple merge
+	displayMode: 'SOURCE',
+
 	// domain is the min/max range of values within the input data, defaults to auto fit to data
 	scaleDomain: [0, 100],
 

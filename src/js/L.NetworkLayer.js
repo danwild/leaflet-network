@@ -4,7 +4,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 	options: {
 		data: null,
-		displayMode: 'SOURCE',
+		displayMode: 'ANY',
 		globalWeightMode: true,
 		localColorScale: ['green', 'red'],
 		scaleDomain: null,
