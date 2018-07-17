@@ -88,7 +88,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		})).attr("class", "site").enter().append("circle").style("opacity", self.options.nodeOpacity).style("cursor", "pointer").style("fill", self.options.nodeFillColor).attr("r", self.options.nodeRadius).on('click', function (d) {
 			console.log(d);
 			// set circles all inactive style, set this active
-			self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", 5);
+			self._svgGroup1.selectAll("circle").style("opacity", self.options.nodeOpacity).attr("r", 5);
 			d3.select(this).style('opacity', '0.8').attr("r", 10);
 
 			// redraws ALL lines
@@ -115,7 +115,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	update: function update() {
 		var self = this;
 		self._drawConnections(this._targetId);
-		if (!this._targetId) self._svgGroup1.selectAll("circle").style("opacity", 0.5).attr("r", self.options.nodeRadius);
+		if (!this._targetId) self._svgGroup1.selectAll("circle").style("opacity", self.options.nodeOpacity).attr("r", self.options.nodeRadius);
 		this._svgGroup1.selectAll("circle").attr("transform", function (d) {
 			return "translate(" + self._map.latLngToLayerPoint(d.properties.LatLng).x + "," + self._map.latLngToLayerPoint(d.properties.LatLng).y + ")";
 		});
