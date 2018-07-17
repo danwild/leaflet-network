@@ -105,6 +105,7 @@ layerControl.addOverlay(networkLayer, 'Network Example');
 |---|---|---|
 |`update`||trigger a redraw of all elements using current target|
 |`setData`|`data: {Object}`|update the layer with new data|
+|`setOptions`|`options: {Object}`|update the layer with new options|
 |`setTarget`|`id: {String}`|Set the active target node by id|
 |`setDisplayMode`|`mode: {String}`|one of: `SOURCE`, `SINK`, `ANY`, `BOTH`|
 |`getPointById`|`id: {String}`|Get a node by id|

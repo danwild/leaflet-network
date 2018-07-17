@@ -131,6 +131,15 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	},
 
 	/**
+  * Update the layer with new options
+  * @param {Object} options
+  */
+	setOptions: function setOptions(options) {
+		L.setOptions(this, options);
+		if (this._active) this.update();
+	},
+
+	/**
   * Set the active target node by id
   * @param {String} id
   */

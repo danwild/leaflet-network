@@ -132,8 +132,17 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	 * Update the layer with new data
 	 * @param {Object} data
 	 */
-	setData: function setData(data) {
+	setData: function (data) {
 		this.options.data = data;
+		if (this._active) this.update();
+	},
+
+	/**
+	 * Update the layer with new options
+	 * @param {Object} options
+	 */
+	setOptions: function (options) {
+		L.setOptions(this, options);
 		if (this._active) this.update();
 	},
 
