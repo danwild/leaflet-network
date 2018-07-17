@@ -69,7 +69,7 @@ layerControl.addOverlay(networkLayer, 'Network Example');
 |---|---|---|
 |`update`||trigger a redraw of all elements using current target|
 |`setData`|`data: {Object}`|update the layer with new data|
-|`setTarget`|`id: {String}`|display the particles at the given frame index|
+|`setTarget`|`id: {String}`|Set the active target node by id|
 |`setDisplayMode`|`mode: {String}`|one of: `SOURCE`, `SINK`, `ALL`, `BOTH`|
 |`getPointById`|`id: {String}`|Get a node by id|
 
@@ -77,25 +77,24 @@ layerControl.addOverlay(networkLayer, 'Network Example');
 
 ```javascript
 var data = [
-	{
-		"properties": {
-			"lat": "",
-			"lon": "",
-			"id": "uid1"
-			
-		},
-		"connections": {
-			"uid1": 233,    // connection score to self, ignored
-			"uid2": 0,      // null connection, could be omited
-			"uid2": 37      // defines a connection score of 37 with point uid2
-		}
-	},
-	{...}
+  {
+    "properties": {
+      "lat": "",
+      "lon": "",
+      "id": "uid1"
+    },
+    "connections": {
+      "uid1": 233,    // connection score to self, ignored
+      "uid2": 0,      // null connection, could be omited
+      "uid2": 37      // defines a connection score of 37 with point uid2
+    }
+  },
+  {...}
 ]
 ```
 
 ## todo
-* circle points could derive radius size from source/sink score?
+* better representation of connection strength
 * better parameterization of styling etc.
 
 ## shout outs
