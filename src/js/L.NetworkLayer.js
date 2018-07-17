@@ -15,6 +15,8 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		nodeFillColor: 'red',
 		nodeOpacity: 0.5,
 		nodeRadius: 5,
+		lineOpacity: 0.8,
+		lineWidth: 2,
 		onMouseEnterNode: null,
 		onMouseLeaveNode: null,
 		onMouseEnterLine: null,
@@ -90,7 +92,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				console.log(d);
 				// set circles all inactive style, set this active
 				self._svgGroup1.selectAll("circle").style("opacity", self.options.nodeOpacity).attr("r", 5);
-				d3.select(this).style('opacity','0.8').attr("r", 10);
+				d3.select(this).style('opacity', '1').attr("r", 10);
 
 				// redraws ALL lines
 				// TODO can probably do this more efficiently, e.g. just update style
@@ -246,20 +248,19 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				// global scope weighting
 				} else if (targetId && self.options.globalWeightMode) {
 
+					opacity = self.options.lineOpacity;
+
 					if(self.options.displayMode == 'SOURCE' && targetId == site.properties.id){
 						color = self.options.sourceColor;
-						opacity = 0.8;
 					}
 
 					else if(self.options.displayMode == 'SINK' && targetId == conKey){
 						color = self.options.sinkColor;
-						opacity = 0.8;
 					}
 
 					else if(self.options.displayMode == 'ANY') {
 						if(targetId == site.properties.id || targetId == conKey){
 							color = self.options.allColor;
-							opacity = 0.8;
 						}
 					}
 
@@ -267,11 +268,9 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 						if(targetId == site.properties.id){
 							color = self.options.sourceColor;
-							opacity = 0.8;
 						}
 						if(targetId == conKey){
 							color = self.options.sinkColor;
-							opacity = 0.8;
 						}
 					}
 				}
@@ -287,7 +286,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					.attr("y1", targetPoint.y)
 					.attr("x2", conPoint.x)
 					.attr("y2", conPoint.y)
-					.attr("stroke-width", lineWidth)
+					.attr("stroke-width",  self.options.lineWidth)
 					.attr("stroke-opacity", opacity)
 					.attr("stroke", color);
 			});
@@ -361,8 +360,8 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					.attr("y1", targetPoint.y)
 					.attr("x2", conPoint.x)
 					.attr("y2", conPoint.y)
-					.attr("stroke-width", 2)
-					.attr("stroke-opacity", 0.9)
+					.attr("stroke-width", self.options.lineWidth)
+					.attr("stroke-opacity", self.options.lineOpacity)
 					.attr("stroke", colorScale(conValue))
 					.attr("data-weight", conValue)
 					.style("cursor", "pointer")
