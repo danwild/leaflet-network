@@ -20,6 +20,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		lineOpacity: 0.8,
 		lineWidth: 2,
 		lineWidthActive: 2,
+		lineDashStyle: "20, 3",
 		onMouseEnterNode: null,
 		onMouseLeaveNode: null,
 		onMouseEnterLine: null,
@@ -243,23 +244,26 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					// global scope weighting
 				} else if (targetId && self.options.globalWeightMode) {
 
-					opacity = self.options.lineOpacity;
-
 					if (self.options.displayMode == 'SOURCE' && targetId == site.properties.id) {
 						color = self.options.sourceColor;
+						opacity = self.options.lineOpacity;
 					} else if (self.options.displayMode == 'SINK' && targetId == conKey) {
 						color = self.options.sinkColor;
+						opacity = self.options.lineOpacity;
 					} else if (self.options.displayMode == 'ANY') {
 						if (targetId == site.properties.id || targetId == conKey) {
 							color = self.options.allColor;
+							opacity = self.options.lineOpacity;
 						}
 					} else if (self.options.displayMode == 'BOTH') {
 
 						if (targetId == site.properties.id) {
 							color = self.options.sourceColor;
+							opacity = self.options.lineOpacity;
 						}
 						if (targetId == conKey) {
 							color = self.options.sinkColor;
+							opacity = self.options.lineOpacity;
 						}
 					}
 				}
@@ -281,7 +285,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 			var localSinkDomain = this._getConnectionsDomain(sinks);
 			var sinkScale = d3.scaleLinear().domain(localSinkDomain).interpolate(d3.interpolateHcl).range(self._localColors);
-			this._drawLocalWeightedNodes(sinks, sinkScale, svgGroup2, "10, 3");
+			this._drawLocalWeightedNodes(sinks, sinkScale, svgGroup2, self.options.lineDashStyle);
 
 			var localSourceDomain = this._getConnectionsDomain(sources);
 			var sourceScale = d3.scaleLinear().domain(localSourceDomain).interpolate(d3.interpolateHcl).range(self._localColors);

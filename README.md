@@ -87,6 +87,7 @@ var networkLayer = L.networkLayer({
 	lineOpacity: 0.8,
 	lineWidth: 2,
 	lineWidthActive: 2,
+	lineDashStyle: ("20, 3") // e.g. draw 20, dash 3
 
 	// callback function for mouseenter event on node, receives target node
 	onMouseEnterNode: function(node){
