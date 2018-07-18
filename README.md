@@ -89,6 +89,11 @@ var networkLayer = L.networkLayer({
 	lineWidthActive: 2,
 	lineDashStyle: ("20, 3") // e.g. draw 20, dash 3
 
+	// callback function for click event on node, receives target node
+    onClickNode: function(node){
+      // e.g. add clear selection button
+    },
+
 	// callback function for mouseenter event on node, receives target node
 	onMouseEnterNode: function(node){
 	  // e.g. set a tooltip
@@ -98,6 +103,19 @@ var networkLayer = L.networkLayer({
 	onMouseLeaveNode: function(node){
 	  // e.g. remove a tooltip
 	}
+
+	// callback function for mouseenter event on line, receives no params
+	// but *this* context can be used to retrieve the DOM elem, which has weight attr
+    onMouseEnterLine: function(){
+      // e.g. const weight = $(this).data('weight');
+      // display weight
+    },
+
+    // callback function for mouseleave event on line, receives no params
+    // but *this* context can be used to retrieve the DOM elem
+    onMouseLeaveLine: function(){
+        // e.g. hide weight
+    }
 
 });
 

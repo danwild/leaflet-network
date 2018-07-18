@@ -19,6 +19,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		lineWidth: 2,
 		lineWidthActive: 2,
 		lineDashStyle: ("20, 3"),
+		onClickNode: null,
 		onMouseEnterNode: null,
 		onMouseLeaveNode: null,
 		onMouseEnterLine: null,
@@ -100,6 +101,8 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				// TODO can probably do this more efficiently, e.g. just update style
 				self._targetId = d.properties.id;
 				self._drawConnections(self._targetId);
+
+				if (self.options.onClickNode) self.options.onClickNode(d);
 			})
 			.on('mouseenter', this.options.onMouseEnterNode)
 			.on('mouseleave', this.options.onMouseLeaveNode);
