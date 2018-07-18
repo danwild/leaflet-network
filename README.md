@@ -104,13 +104,16 @@ var networkLayer = L.networkLayer({
 	  // e.g. remove a tooltip
 	}
 
-	// callback function for mouseenter event on line, receives dom elem and weight
-	onMouseEnterLine: function(elem, weight){
-	  // e.g. display weight
+	// callback function for mouseenter event on line, receives dom elem
+	// which has some data attributes, e.g. weight, lat, long
+	onMouseEnterLine: function(elem){
+	  // e.g. display elem.dataset.weight
+
 	},
 
-	// callback function for mouseleave event on line, receives dom elem and weight
-	onMouseLeaveLine: function(elem, weight){
+	// callback function for mouseleave event on line, receives dom elem
+	// which has some data attributes, e.g. weight, lat, long
+	onMouseLeaveLine: function(elem){
 	  // e.g. hide weight
 	}
 

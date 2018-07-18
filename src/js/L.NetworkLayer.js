@@ -379,13 +379,15 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					.attr("stroke-opacity", self.options.lineOpacity)
 					.attr("stroke", colorScale(conValue))
 					.attr("data-weight", conValue)
+					.attr("data-lat", conSite.properties.LatLng.lat)
+					.attr("data-lon", conSite.properties.LatLng.lng)
 					.style("cursor", "pointer")
 					.style("stroke-dasharray", dashStyle)
 					.on('mouseenter', function(){
-						if (self.options.onMouseEnterLine) self.options.onMouseEnterLine(this, this.dataset.weight);
+						if (self.options.onMouseEnterLine) self.options.onMouseEnterLine(this);
 					})
 					.on('mouseleave', function(){
-						if (self.options.onMouseLeaveLine) self.options.onMouseLeaveLine(this, this.dataset.weight);
+						if (self.options.onMouseLeaveLine) self.options.onMouseLeaveLine(this);
 					});
 			});
 		});
