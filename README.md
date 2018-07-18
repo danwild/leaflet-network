@@ -90,9 +90,9 @@ var networkLayer = L.networkLayer({
 	lineDashStyle: ("20, 3") // e.g. draw 20, dash 3
 
 	// callback function for click event on node, receives target node
-    onClickNode: function(node){
-      // e.g. add clear selection button
-    },
+	onClickNode: function(node){
+	  // e.g. add clear selection button
+	},
 
 	// callback function for mouseenter event on node, receives target node
 	onMouseEnterNode: function(node){
@@ -106,16 +106,16 @@ var networkLayer = L.networkLayer({
 
 	// callback function for mouseenter event on line, receives no params
 	// but *this* context can be used to retrieve the DOM elem, which has weight attr
-    onMouseEnterLine: function(){
-      // e.g. const weight = $(this).data('weight');
-      // display weight
-    },
+	onMouseEnterLine: function(){
+	  // e.g. const weight = $(this).data('weight');
+	  // display weight
+	},
 
-    // callback function for mouseleave event on line, receives no params
-    // but *this* context can be used to retrieve the DOM elem
-    onMouseLeaveLine: function(){
-        // e.g. hide weight
-    }
+	// callback function for mouseleave event on line, receives no params
+	// but *this* context can be used to retrieve the DOM elem
+	onMouseLeaveLine: function(){
+	  // e.g. hide weight
+	}
 
 });
 
@@ -131,6 +131,7 @@ layerControl.addOverlay(networkLayer, 'Network Example');
 |`setData`|`data: {Object}`|update the layer with new data|
 |`setOptions`|`options: {Object}`|update the layer with new options|
 |`setTarget`|`id: {String}`|Set the active target node by id|
+|`getTargetId`||Get ID of the active target node|
 |`setDisplayMode`|`mode: {String}`|one of: `SOURCE`, `SINK`, `ANY`, `BOTH`|
 |`getPointById`|`id: {String}`|Get a node by id|
 |`isActive`||Check if layer is active on the map|

@@ -156,6 +156,14 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	},
 
 	/**
+  * Get the active target node by id
+  * @param {String} id
+  */
+	getTargetId: function getTargetId() {
+		return this._targetId;
+	},
+
+	/**
   * Set the layer display mode (triggers update)
   * @param mode {String} One of: ['SOURCE', 'SINK', 'ALL', 'BOTH']
   */
