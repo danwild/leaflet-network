@@ -342,7 +342,11 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				var targetPoint = self._map.latLngToLayerPoint(node.properties.LatLng);
 				var conPoint = self._map.latLngToLayerPoint(conSite.properties.LatLng);
 
-				svgGroup.append("line").attr("class", "connection").attr("x1", targetPoint.x).attr("y1", targetPoint.y).attr("x2", conPoint.x).attr("y2", conPoint.y).attr("stroke-width", self.options.lineWidthActive).attr("stroke-opacity", self.options.lineOpacity).attr("stroke", colorScale(conValue)).attr("data-weight", conValue).style("cursor", "pointer").style("stroke-dasharray", dashStyle).on('mouseenter', self.options.onMouseEnterLine).on('mouseleave', self.options.onMouseLeaveLine);
+				svgGroup.append("line").attr("class", "connection").attr("x1", targetPoint.x).attr("y1", targetPoint.y).attr("x2", conPoint.x).attr("y2", conPoint.y).attr("stroke-width", self.options.lineWidthActive).attr("stroke-opacity", self.options.lineOpacity).attr("stroke", colorScale(conValue)).attr("data-weight", conValue).style("cursor", "pointer").style("stroke-dasharray", dashStyle).on('mouseenter', function () {
+					if (self.options.onMouseEnterLine) self.options.onMouseEnterLine(this, this.dataset.weight);
+				}).on('mouseleave', function () {
+					if (self.options.onMouseLeaveLine) self.options.onMouseLeaveLine(this, this.dataset.weight);
+				});
 			});
 		});
 	}

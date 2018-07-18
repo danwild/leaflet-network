@@ -381,8 +381,12 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					.attr("data-weight", conValue)
 					.style("cursor", "pointer")
 					.style("stroke-dasharray", dashStyle)
-					.on('mouseenter', self.options.onMouseEnterLine)
-					.on('mouseleave', self.options.onMouseLeaveLine);
+					.on('mouseenter', function(){
+						if (self.options.onMouseEnterLine) self.options.onMouseEnterLine(this, this.dataset.weight);
+					})
+					.on('mouseleave', function(){
+						if (self.options.onMouseLeaveLine) self.options.onMouseLeaveLine(this, this.dataset.weight);
+					});
 			});
 		});
 	}

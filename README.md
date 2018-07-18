@@ -104,16 +104,13 @@ var networkLayer = L.networkLayer({
 	  // e.g. remove a tooltip
 	}
 
-	// callback function for mouseenter event on line, receives no params
-	// but *this* context can be used to retrieve the DOM elem, which has weight attr
-	onMouseEnterLine: function(){
-	  // e.g. const weight = $(this).data('weight');
-	  // display weight
+	// callback function for mouseenter event on line, receives dom elem and weight
+	onMouseEnterLine: function(elem, weight){
+	  // e.g. display weight
 	},
 
-	// callback function for mouseleave event on line, receives no params
-	// but *this* context can be used to retrieve the DOM elem
-	onMouseLeaveLine: function(){
+	// callback function for mouseleave event on line, receives dom elem and weight
+	onMouseLeaveLine: function(elem, weight){
 	  // e.g. hide weight
 	}
 
