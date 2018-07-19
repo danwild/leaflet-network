@@ -63,7 +63,7 @@ var networkLayer = L.networkLayer({
 	// If provided, any data (weights) outside of the clipRange will be ignored
 	clipRange: [25, 75],
 
-    // How the connection weights should be scaled
+	// How the connection weights should be scaled
 	// One of: ['GLOBAL', 'LOCAL', 'NONE']
 	weightMode: 'GLOBAL',
 
@@ -135,7 +135,7 @@ layerControl.addOverlay(networkLayer, 'Network Example');
 |`setDisplayMode`|`mode: {String}`|one of: `SOURCE`, `SINK`, `ANY`, `BOTH`|
 |`getPointById`|`id: {String}`|Get a node by id|
 |`isActive`||Check if layer is active on the map|
-
+|`getConnectionsDomain`|Optional: `data: {Object}`|Get the domain (min/max) of values in the data array (defaults to current)|
 
 ## data format
 

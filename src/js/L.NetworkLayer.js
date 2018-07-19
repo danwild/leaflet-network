@@ -55,7 +55,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 		// prep color scale
 		if(!this.options.globalScaleDomain) {
-			this.options.globalScaleDomain = this._getConnectionsDomain(data);
+			this.options.globalScaleDomain = this.getConnectionsDomain(data);
 			// arbitrarily shaving a bit of max for slighly nicer default
 			this.options.globalScaleDomain[1] = this.options.globalScaleDomain[1] * 0.9;
 		}
@@ -207,16 +207,15 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		return this._active;
 	},
 
-	/*------------------------------------ PRIVATE ------------------------------------------*/
-
 	/**
-	 * Get the domain (min/max) of values in given data array
+	 * Get the domain (min/max) of values in given optional data array (defaults to current)
 	 * @param data {Array} list of nodes
 	 * @returns {Array[min,max]}
 	 * @private
 	 */
-	_getConnectionsDomain: function(data) {
+	getConnectionsDomain: function(data) {
 		let self = this;
+		if (!data) data = this._data;
 		let connections = [];
 		data.forEach(function(d){
 			Object.values(d.connections).forEach(function(value){
@@ -224,13 +223,13 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			});
 		});
 
-		console.log('connections');
-		console.log(connections);
-
 		const min = d3.min(connections);
 		const max = d3.max(connections);
 		return [min, max];
 	},
+
+
+	/*------------------------------------ PRIVATE ------------------------------------------*/
 
 	_drawConnections: function(targetId){
 
@@ -368,13 +367,13 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		//  2 x color scales with independent domains, sources dashed line
 		if (self.options.displayMode === 'BOTH') {
 
-			const localSinkDomain = this._getConnectionsDomain(sinks);
+			const localSinkDomain = this.getConnectionsDomain(sinks);
 			const sinkScale = d3.scaleLinear().domain(localSinkDomain)
 				.interpolate(d3.interpolateRgb)
 				.range(self._colors);
 			this._drawLocalWeightedNodes(sinks, sinkScale, svgGroup2, self.options.lineDashStyle);
 
-			const localSourceDomain = this._getConnectionsDomain(sources);
+			const localSourceDomain = this.getConnectionsDomain(sources);
 			const sourceScale = d3.scaleLinear().domain(localSourceDomain)
 				.interpolate(d3.interpolateRgb)
 				.range(self._colors);
@@ -398,7 +397,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					break;
 			}
 
-			const localDomain = this._getConnectionsDomain(nodes);
+			const localDomain = this.getConnectionsDomain(nodes);
 			const colorScale = d3.scaleLinear().domain(localDomain)
 				.interpolate(d3.interpolateHcl)
 				.range(self._colors);
