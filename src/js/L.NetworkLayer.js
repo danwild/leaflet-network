@@ -57,7 +57,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		// prep color scale
 		if(!this.options.globalScaleDomain) {
 			this.options.globalScaleDomain = this.getConnectionsDomain(true, data);
-			// arbitrarily shaving a bit of max for slighly nicer default
+			// arbitrarily shaving a bit of max for slightly nicer default
 			this.options.globalScaleDomain[1] = this.options.globalScaleDomain[1] * 0.9;
 		}
 		this.options.colorScale.forEach((color) => { this._colors.push(d3.rgb(color)); });
@@ -210,9 +210,9 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 	/**
 	 * Get the domain (min/max) of values in given optional data array (defaults to current)
+	 * @param clipped {Boolean} should domain be clipped to clipRange
 	 * @param data {Array} list of nodes
 	 * @returns {Array[min,max]}
-	 * @private
 	 */
 	getConnectionsDomain: function(clipped, data) {
 		let self = this;

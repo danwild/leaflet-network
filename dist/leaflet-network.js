@@ -59,8 +59,8 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 		// prep color scale
 		if (!this.options.globalScaleDomain) {
-			this.options.globalScaleDomain = this.getConnectionsDomain(data);
-			// arbitrarily shaving a bit of max for slighly nicer default
+			this.options.globalScaleDomain = this.getConnectionsDomain(true, data);
+			// arbitrarily shaving a bit of max for slightly nicer default
 			this.options.globalScaleDomain[1] = this.options.globalScaleDomain[1] * 0.9;
 		}
 		this.options.colorScale.forEach(function (color) {
@@ -201,17 +201,17 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 	/**
   * Get the domain (min/max) of values in given optional data array (defaults to current)
+  * @param clipped {Boolean} should domain be clipped to clipRange
   * @param data {Array} list of nodes
   * @returns {Array[min,max]}
-  * @private
   */
-	getConnectionsDomain: function getConnectionsDomain(data) {
+	getConnectionsDomain: function getConnectionsDomain(clipped, data) {
 		var self = this;
 		if (!data) data = this.options.data;
 		var connections = [];
 		data.forEach(function (d) {
 			Object.values(d.connections).forEach(function (value) {
-				if (self._connectionInRange(value)) connections.push(value);
+				if (self._connectionInRange(value) || !clipped) connections.push(value);
 			});
 		});
 
@@ -330,11 +330,11 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		//  2 x color scales with independent domains, sources dashed line
 		if (self.options.displayMode === 'BOTH') {
 
-			var localSinkDomain = this.getConnectionsDomain(sinks);
+			var localSinkDomain = this.getConnectionsDomain(true, sinks);
 			var sinkScale = d3.scaleLinear().domain(localSinkDomain).interpolate(d3.interpolateRgb).range(self._colors);
 			this._drawLocalWeightedNodes(sinks, sinkScale, svgGroup2, self.options.lineDashStyle);
 
-			var localSourceDomain = this.getConnectionsDomain(sources);
+			var localSourceDomain = this.getConnectionsDomain(true, sources);
 			var sourceScale = d3.scaleLinear().domain(localSourceDomain).interpolate(d3.interpolateRgb).range(self._colors);
 			this._drawLocalWeightedNodes(sources, sourceScale, svgGroup2, null);
 
@@ -356,7 +356,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					break;
 			}
 
-			var localDomain = this.getConnectionsDomain(nodes);
+			var localDomain = this.getConnectionsDomain(true, nodes);
 			var colorScale = d3.scaleLinear().domain(localDomain).interpolate(d3.interpolateHcl).range(self._colors);
 
 			this._drawLocalWeightedNodes(nodes, colorScale, svgGroup2, null);
