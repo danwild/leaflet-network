@@ -84,6 +84,7 @@ var networkLayer = L.networkLayer({
 	nodeOpacity: 0.5,
 
 	// styling for connection lines
+	lineInactiveColor: 'grey',
 	lineOpacity: 0.8,
 	lineWidth: 2,
 	lineWidthActive: 2,

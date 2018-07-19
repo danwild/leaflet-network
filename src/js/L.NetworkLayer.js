@@ -10,6 +10,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		sourceColor: '#FE5E69',
 		sinkColor: '#7EC891',
 		allColor: 'purple',
+		lineInactiveColor: 'grey',
 		globalScaleDomain: null,
 		nodeFillColor: 'red',
 		nodeOpacity: 0.5,
@@ -258,7 +259,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				if(!conSite || !site.connections[conKey]) return;
 
 				// styles for connection not related to target
-				var color = 'grey';
+				var color = self.options.lineInactiveColor;
 				var opacity = 0.2;
 				const conValue = site.connections[conKey];
 				const inRange = self._connectionInRange(conValue);
@@ -325,14 +326,14 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				var conPoint = map.latLngToLayerPoint(conSite.properties.LatLng);
 
 				// add line with even listeners
-				if (self.options.weightMode !== 'NONE') {
+				if (self.options.weightMode !== 'NONE' && color !== self.options.lineInactiveColor) {
 					svgGroup2.append("line")
 						.attr("class", "connection")
 						.attr("x1", targetPoint.x)
 						.attr("y1", targetPoint.y)
 						.attr("x2", conPoint.x)
 						.attr("y2", conPoint.y)
-						.attr("stroke-width",  color !== 'grey' ? self.options.lineWidthActive : 2)
+						.attr("stroke-width",  self.options.lineWidthActive)
 						.attr("stroke-opacity", opacity)
 						.attr("stroke", color)
 						.attr("data-weight", conValue)
