@@ -4,10 +4,9 @@
 It uses [d3.js v4](http://d3js.org) to visualise the network connections on a `L.SVG` layer.
 
 Node connectivity weights can be represented:
-- **Globally:** node connection strength scaled against all others,
-and represented by width of the connecting line (range defined via `lineWidthRange`)
-- **Locally:** node connection strength is scaled only by the connections it has using the current `displayMode`,
-and represented by color of the connecting lines (range defined via `localColorScale`).
+- **GLOBAL:** node connection weights are scaled against all other connections in the matrix.
+- **LOCAL:** node connection weights are scaled to only the connections of the selected target.
+- **NONE:** connection weights are ignored, simplified display.
 
 This plugin only supports Leaflet ^v1.0.0.
 
@@ -55,25 +54,21 @@ var networkLayer = L.networkLayer({
 	//   keeps SOURCE/SINK weightings separate, whereas ANY is a simple merge
 	displayMode: 'SOURCE',
 
-	// domain is the min/max range of values within the input data, defaults to auto fit to data
-	scaleDomain: [0, 100],
+	// domain is the min/max range of values within the input data, defaults to auto
+	// fit data (min, max-10%), often needs tweaking (depends on shape of your data)
+	globalScaleDomain: [0, 100],
 
-	// pixel range the the min/max range we should scale the data to, defaults to [1, 5]
-	lineWidthRange: [1, 5],
+    // How the connection weights should be scaled
+	// One of: ['GLOBAL', 'LOCAL', 'NONE']
+	weightMode: 'GLOBAL',
 
-	// if true, connection weight is calculated in global scope
-	// (i.e. against all connections) and is represented by line width
-	// if false, connection weight is calculated using the local scope of the active node (scale is fitted to a
-	// single nodes own connection weights), and is represented by line color
-	globalWeightMode: true,
-
-	// the color scale to use when globalWeightMode=false
+	// the color scale to use to represent connection strengths
 	// note that when used with displayMode=BOTH, SOURCE/SINK connections will be
 	// displayed on independent scales (to unify scales, use displayMode=ANY).
-	localColorScale: ["green", "yellow", "red"],
+	colorScale: ["green", "yellow", "red"],
 
-	// color for connections when not using local scaled colors
-	// i.e. globalWeightMode=true
+	// color for connections when not scaled colors
+	// i.e. weightMode='NONE'
 	sourceColor: 'red',
 	sinkColor: 'green',
 	allColor: 'blue',

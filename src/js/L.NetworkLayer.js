@@ -5,13 +5,12 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	options: {
 		data: null,
 		displayMode: 'ANY',
-		globalWeightMode: true,
-		localColorScale: ['green', 'red'],
-		sourceColor: 'red',
-		sinkColor: 'green',
-		allColor: 'blue',
-		scaleDomain: null,
-		lineWidthRange: [1, 5],
+		weightMode: 'NONE',
+		colorScale: ['#7EC891', '#FE5E69'],
+		sourceColor: '#FE5E69',
+		sinkColor: '#7EC891',
+		allColor: 'purple',
+		globalScaleDomain: null,
 		nodeFillColor: 'red',
 		nodeOpacity: 0.5,
 		nodeRadius: 5,
@@ -32,8 +31,8 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	_svgGroup1: null,
 	_svgGroup2: null,
 	_targetId: null,
-	_linearWidthScale: null,
-	_localColors: [],
+	_colors: [],
+	_globalColorScale: null,
 
 	initialize: function(options) {
 		L.setOptions(this, options);
@@ -53,17 +52,18 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		// the target/currently inspected site ID, and mode of inspection
 		this._targetId = null;
 
-		// calc domain range if not provided in options
-		var scaleDomain;
-		if(this.options.scaleDomain){
-			scaleDomain = this.options.scaleDomain;
-		} else {
-			scaleDomain = this._getConnectionsDomain(data);
+		// prep color scale
+		if(!this.options.globalScaleDomain) {
+			this.options.globalScaleDomain = this._getConnectionsDomain(data);
+			// arbitrarily shaving a bit of max for slighly nicer default
+			this.options.globalScaleDomain[1] = this.options.globalScaleDomain[1] * 0.9;
 		}
+		this.options.colorScale.forEach((color) => { this._colors.push(d3.rgb(color)); });
+		this._globalColorScale = d3.scaleLinear().domain(this.options.globalScaleDomain)
+			.interpolate(d3.interpolateRgb)
+			.range(self._colors);
 
-		// prep color and width scales
-		this.options.localColorScale.forEach((color) => { this._localColors.push(d3.rgb(color)); });
-		this._linearWidthScale = d3.scaleLinear().domain(scaleDomain).range(this.options.lineWidthRange);
+		console.log('this.options.globalScaleDomain: '+this.options.globalScaleDomain);
 
 		// initialize the SVG layer
 		this._mapSvg = L.svg();
@@ -92,15 +92,19 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			.style("fill", self.options.nodeFillColor)
 			.attr("r", self.options.nodeRadius)
 			.on('click', function(d){
-				console.log(d);
-				// set circles all inactive style, set this active
-				self._svgGroup1.selectAll("circle").style("opacity", self.options.nodeOpacity).attr("r", 5);
-				d3.select(this).style('opacity', '1').attr("r", 10);
 
-				// redraws ALL lines
-				// TODO can probably do this more efficiently, e.g. just update style
-				self._targetId = d.properties.id;
-				self._drawConnections(self._targetId);
+				if (self.options.weightMode !== 'GLOBAL'){
+
+					console.log(d);
+					// set circles all inactive style, set this active
+					self._svgGroup1.selectAll("circle").style("opacity", self.options.nodeOpacity).attr("r", 5);
+					d3.select(this).style('opacity', '1').attr("r", 10);
+
+					// redraws ALL lines
+					// TODO can probably do this more efficiently, e.g. just update style
+					self._targetId = d.properties.id;
+					self._drawConnections(self._targetId);
+				}
 
 				if (self.options.onClickNode) self.options.onClickNode(d);
 			})
@@ -123,6 +127,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	 * Trigger a redraw of all elements using current target
 	 */
 	update: function() {
+		console.log('update');
 		var self = this;
 		self._drawConnections(this._targetId);
 		if (!this._targetId) self._svgGroup1.selectAll("circle").style("opacity", self.options.nodeOpacity).attr("r", self.options.nodeRadius);
@@ -203,6 +208,12 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 	/*------------------------------------ PRIVATE ------------------------------------------*/
 
+	/**
+	 * Get the domain (min/max) of values in given data array
+	 * @param data {Array} list of nodes
+	 * @returns {Array[min,max]}
+	 * @private
+	 */
 	_getConnectionsDomain: function(data) {
 		let connections = [];
 		data.forEach(function(d){ connections = connections.concat(Object.values(d.connections)); });
@@ -224,8 +235,9 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		var sinks = [];
 
 		// process connections, drawing all inactive ones
-		// if globalWeightMode we draw globally weighted connections (line width)
-		// otherwise build array of node sites so we can compute localised scale before we draw
+		// if weightMode=GLOBAL we draw globally weighted connections
+		// if weightMode=NONE we draw simple connections
+		// if weightMode=LOCAL we build array of node sites so we can compute localised scale before we draw
 		data.forEach(function(site){
 
 			var conKeys = Object.keys(site.connections);
@@ -241,9 +253,9 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				var opacity = 0.2;
 				var conValue = site.connections[conKey];
 
-				// local scope weighting
+				// LOCAL scope weighting
 				// we only take the target connection
-				if (targetId && !self.options.globalWeightMode) {
+				if (targetId && self.options.weightMode === 'LOCAL') {
 
 					if (targetId === site.properties.id) {
 						let target = { properties: site.properties, connections: {}};
@@ -258,8 +270,15 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 						return;
 					}
 
-				// global scope weighting
-				} else if (targetId && self.options.globalWeightMode) {
+				// GLOBAL
+				} else if (self.options.weightMode === 'GLOBAL') {
+
+					// all weighted on same scale
+					color = self._globalColorScale(conValue);
+					opacity = self.options.lineOpacity;
+
+				// NONE scope, color connections by direction
+				} else if (targetId && self.options.weightMode === 'NONE') {
 
 					if(self.options.displayMode == 'SOURCE' && targetId == site.properties.id){
 						color = self.options.sourceColor;
@@ -295,15 +314,39 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				var targetPoint = map.latLngToLayerPoint(site.properties.LatLng);
 				var conPoint = map.latLngToLayerPoint(conSite.properties.LatLng);
 
-				svgGroup2.append("line")
-					.attr("class", "connection")
-					.attr("x1", targetPoint.x)
-					.attr("y1", targetPoint.y)
-					.attr("x2", conPoint.x)
-					.attr("y2", conPoint.y)
-					.attr("stroke-width",  opacity === 0.2 ? self.options.lineWidth : self.options.lineWidthActive)
-					.attr("stroke-opacity", opacity)
-					.attr("stroke", color);
+				// add line with even listeners
+				if (self.options.weightMode !== 'NONE') {
+					svgGroup2.append("line")
+						.attr("class", "connection")
+						.attr("x1", targetPoint.x)
+						.attr("y1", targetPoint.y)
+						.attr("x2", conPoint.x)
+						.attr("y2", conPoint.y)
+						.attr("stroke-width",  self.options.lineWidthActive)
+						.attr("stroke-opacity", opacity)
+						.attr("stroke", color)
+						.attr("data-weight", conValue)
+						.attr("data-lat", conSite.properties.LatLng.lat)
+						.attr("data-lon", conSite.properties.LatLng.lng)
+						.on('mouseenter', function(){
+							if (self.options.onMouseEnterLine) self.options.onMouseEnterLine(this);
+						})
+						.on('mouseleave', function(){
+							if (self.options.onMouseLeaveLine) self.options.onMouseLeaveLine(this);
+						});
+
+				// no interaction
+				} else {
+					svgGroup2.append("line")
+						.attr("class", "connection")
+						.attr("x1", targetPoint.x)
+						.attr("y1", targetPoint.y)
+						.attr("x2", conPoint.x)
+						.attr("y2", conPoint.y)
+						.attr("stroke-width",  2)
+						.attr("stroke-opacity", opacity)
+						.attr("stroke", color)
+				}
 			});
 		});
 
@@ -316,14 +359,14 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 			const localSinkDomain = this._getConnectionsDomain(sinks);
 			const sinkScale = d3.scaleLinear().domain(localSinkDomain)
-				.interpolate(d3.interpolateHcl)
-				.range(self._localColors);
+				.interpolate(d3.interpolateRgb)
+				.range(self._colors);
 			this._drawLocalWeightedNodes(sinks, sinkScale, svgGroup2, self.options.lineDashStyle);
 
 			const localSourceDomain = this._getConnectionsDomain(sources);
 			const sourceScale = d3.scaleLinear().domain(localSourceDomain)
-				.interpolate(d3.interpolateHcl)
-				.range(self._localColors);
+				.interpolate(d3.interpolateRgb)
+				.range(self._colors);
 			this._drawLocalWeightedNodes(sources, sourceScale, svgGroup2, null);
 
 			// a single color scale, combined domain for ALL
@@ -347,7 +390,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			const localDomain = this._getConnectionsDomain(nodes);
 			const colorScale = d3.scaleLinear().domain(localDomain)
 				.interpolate(d3.interpolateHcl)
-				.range(self._localColors);
+				.range(self._colors);
 
 			this._drawLocalWeightedNodes(nodes, colorScale, svgGroup2, null);
 		}
