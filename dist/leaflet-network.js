@@ -207,7 +207,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
   */
 	getConnectionsDomain: function getConnectionsDomain(data) {
 		var self = this;
-		if (!data) data = this._data;
+		if (!data) data = this.options.data;
 		var connections = [];
 		data.forEach(function (d) {
 			Object.values(d.connections).forEach(function (value) {
