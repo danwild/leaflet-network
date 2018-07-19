@@ -56,7 +56,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 		// prep color scale
 		if(!this.options.globalScaleDomain) {
-			this.options.globalScaleDomain = this.getConnectionsDomain(data);
+			this.options.globalScaleDomain = this.getConnectionsDomain(true, data);
 			// arbitrarily shaving a bit of max for slighly nicer default
 			this.options.globalScaleDomain[1] = this.options.globalScaleDomain[1] * 0.9;
 		}
@@ -214,13 +214,13 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	 * @returns {Array[min,max]}
 	 * @private
 	 */
-	getConnectionsDomain: function(data) {
+	getConnectionsDomain: function(clipped, data) {
 		let self = this;
 		if (!data) data = this.options.data;
 		let connections = [];
 		data.forEach(function(d){
 			Object.values(d.connections).forEach(function(value){
-				if(self._connectionInRange(value)) connections.push(value);
+				if(self._connectionInRange(value) || !clipped) connections.push(value);
 			});
 		});
 
@@ -368,13 +368,13 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		//  2 x color scales with independent domains, sources dashed line
 		if (self.options.displayMode === 'BOTH') {
 
-			const localSinkDomain = this.getConnectionsDomain(sinks);
+			const localSinkDomain = this.getConnectionsDomain(true, sinks);
 			const sinkScale = d3.scaleLinear().domain(localSinkDomain)
 				.interpolate(d3.interpolateRgb)
 				.range(self._colors);
 			this._drawLocalWeightedNodes(sinks, sinkScale, svgGroup2, self.options.lineDashStyle);
 
-			const localSourceDomain = this.getConnectionsDomain(sources);
+			const localSourceDomain = this.getConnectionsDomain(true, sources);
 			const sourceScale = d3.scaleLinear().domain(localSourceDomain)
 				.interpolate(d3.interpolateRgb)
 				.range(self._colors);
@@ -398,7 +398,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					break;
 			}
 
-			const localDomain = this.getConnectionsDomain(nodes);
+			const localDomain = this.getConnectionsDomain(true, nodes);
 			const colorScale = d3.scaleLinear().domain(localDomain)
 				.interpolate(d3.interpolateHcl)
 				.range(self._colors);
