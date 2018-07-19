@@ -18,6 +18,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		lineWidth: 2,
 		lineWidthActive: 2,
 		lineDashStyle: ("20, 3"),
+		clipRange: null,
 		onClickNode: null,
 		onMouseEnterNode: null,
 		onMouseLeaveNode: null,
@@ -215,8 +216,17 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	 * @private
 	 */
 	_getConnectionsDomain: function(data) {
+		let self = this;
 		let connections = [];
-		data.forEach(function(d){ connections = connections.concat(Object.values(d.connections)); });
+		data.forEach(function(d){
+			Object.values(d.connections).forEach(function(value){
+				if(self._connectionInRange(value)) connections.push(value);
+			});
+		});
+
+		console.log('connections');
+		console.log(connections);
+
 		const min = d3.min(connections);
 		const max = d3.max(connections);
 		return [min, max];
@@ -245,17 +255,18 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			// each connection
 			conKeys.forEach(function(conKey){
 
-				var conSite = self.getPointById(conKey);
+				const conSite = self.getPointById(conKey);
 				if(!conSite || !site.connections[conKey]) return;
 
 				// styles for connection not related to target
 				var color = 'grey';
 				var opacity = 0.2;
-				var conValue = site.connections[conKey];
+				const conValue = site.connections[conKey];
+				const inRange = self._connectionInRange(conValue);
 
 				// LOCAL scope weighting
 				// we only take the target connection
-				if (targetId && self.options.weightMode === 'LOCAL') {
+				if (targetId && inRange && self.options.weightMode === 'LOCAL') {
 
 					if (targetId === site.properties.id) {
 						let target = { properties: site.properties, connections: {}};
@@ -271,14 +282,14 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 					}
 
 				// GLOBAL
-				} else if (self.options.weightMode === 'GLOBAL') {
+				} else if (self.options.weightMode === 'GLOBAL' && inRange) {
 
 					// all weighted on same scale
 					color = self._globalColorScale(conValue);
 					opacity = self.options.lineOpacity;
 
 				// NONE scope, color connections by direction
-				} else if (targetId && self.options.weightMode === 'NONE') {
+				} else if (targetId && self.options.weightMode === 'NONE' && inRange) {
 
 					if(self.options.displayMode == 'SOURCE' && targetId == site.properties.id){
 						color = self.options.sourceColor;
@@ -322,7 +333,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 						.attr("y1", targetPoint.y)
 						.attr("x2", conPoint.x)
 						.attr("y2", conPoint.y)
-						.attr("stroke-width",  self.options.lineWidthActive)
+						.attr("stroke-width",  color !== 'grey' ? self.options.lineWidthActive : 2)
 						.attr("stroke-opacity", opacity)
 						.attr("stroke", color)
 						.attr("data-weight", conValue)
@@ -395,6 +406,11 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			this._drawLocalWeightedNodes(nodes, colorScale, svgGroup2, null);
 		}
 
+	},
+
+	_connectionInRange: function (value) {
+		if (!this.options.clipRange) return true;
+		return +value >= this.options.clipRange[0] && +value <= this.options.clipRange[1];
 	},
 
 	_drawLocalWeightedNodes: function (nodes, colorScale, svgGroup, dashStyle) {

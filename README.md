@@ -54,9 +54,14 @@ var networkLayer = L.networkLayer({
 	//   keeps SOURCE/SINK weightings separate, whereas ANY is a simple merge
 	displayMode: 'SOURCE',
 
-	// domain is the min/max range of values within the input data, defaults to auto
+	// domain is the min/max boundaries of values that will be used to fit data to the range scale, defaults to auto
 	// fit data (min, max-10%), often needs tweaking (depends on shape of your data)
+	// if this terminology is confusing you, see:
+	// https://javascript.tutorialhorizon.com/2015/01/17/d3-fundamentals-understanding-domain-range-and-scales-in-d3js/
 	globalScaleDomain: [0, 100],
+
+	// If provided, any data (weights) outside of the clipRange will be ignored
+	clipRange: [25, 75],
 
     // How the connection weights should be scaled
 	// One of: ['GLOBAL', 'LOCAL', 'NONE']
