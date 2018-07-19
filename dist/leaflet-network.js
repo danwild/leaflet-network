@@ -124,10 +124,9 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
   * Trigger a redraw of all elements using current target
   */
 	update: function update() {
-		console.log('update');
 		var self = this;
 		self._drawConnections(this._targetId);
-		if (!this._targetId) self._svgGroup1.selectAll("circle").style("opacity", self.options.nodeOpacity).attr("r", self.options.nodeRadius);
+		if (!this._targetId || this.options.weightMode === 'GLOBAL') self._svgGroup1.selectAll("circle").style("opacity", self.options.nodeOpacity).attr("r", self.options.nodeRadius);
 		this._svgGroup1.selectAll("circle").attr("transform", function (d) {
 			return "translate(" + self._map.latLngToLayerPoint(d.properties.LatLng).x + "," + self._map.latLngToLayerPoint(d.properties.LatLng).y + ")";
 		});
