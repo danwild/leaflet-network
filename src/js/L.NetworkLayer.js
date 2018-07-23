@@ -53,19 +53,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 		// the target/currently inspected site ID, and mode of inspection
 		this._targetId = null;
-
-		// prep color scale
-		if(!this.options.globalScaleDomain) {
-			this.options.globalScaleDomain = this.getConnectionsDomain(true, data);
-			// arbitrarily shaving a bit of max for slightly nicer default
-			this.options.globalScaleDomain[1] = this.options.globalScaleDomain[1] * 0.9;
-		}
-		this.options.colorScale.forEach((color) => { this._colors.push(d3.rgb(color)); });
-		this._globalColorScale = d3.scaleLinear().domain(this.options.globalScaleDomain)
-			.interpolate(d3.interpolateRgb)
-			.range(self._colors);
-
-		console.log('this.options.globalScaleDomain: '+this.options.globalScaleDomain);
+		this._updateGlobalScale();
 
 		// initialize the SVG layer
 		this._mapSvg = L.svg();
@@ -130,6 +118,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	 */
 	update: function() {
 		var self = this;
+		this._updateGlobalScale();
 		self._drawConnections(this._targetId);
 		if (!this._targetId || this.options.weightMode === 'GLOBAL') self._svgGroup1.selectAll("circle").style("opacity", self.options.nodeOpacity).attr("r", self.options.nodeRadius);
 		this._svgGroup1.selectAll("circle").attr("transform",
@@ -231,6 +220,22 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 	/*------------------------------------ PRIVATE ------------------------------------------*/
 
+	_updateGlobalScale: function () {
+		// init color scale, if globalScaleDomain
+		// is not defined we assume we should attempt to use clipRange
+		if(!this.options.globalScaleDomain) {
+			this.options.globalScaleDomain = this.getConnectionsDomain(true, this.options.data);
+			// arbitrarily shaving a bit of max for slightly nicer default
+			this.options.globalScaleDomain[1] = this.options.globalScaleDomain[1] * 0.9;
+		}
+		this.options.colorScale.forEach((color) => { this._colors.push(d3.rgb(color)); });
+		this._globalColorScale = d3.scaleLinear().domain(this.options.globalScaleDomain)
+			.interpolate(d3.interpolateRgb)
+			.range(this._colors);
+
+		console.log('this.options.globalScaleDomain: '+this.options.globalScaleDomain);
+	},
+
 	_drawConnections: function(targetId){
 
 		const self = this;
@@ -280,12 +285,17 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 						return;
 					}
 
-				// GLOBAL
+				// GLOBAL visible
 				} else if (self.options.weightMode === 'GLOBAL' && inRange) {
 
 					// all weighted on same scale
 					color = self._globalColorScale(conValue);
 					opacity = self.options.lineOpacity;
+
+				// GLOBAL hidden
+				} else if (self.options.weightMode === 'GLOBAL' && !inRange) {
+
+					return;
 
 				// NONE scope, color connections by direction
 				} else if (targetId && self.options.weightMode === 'NONE' && inRange) {
