@@ -111,6 +111,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
   * Trigger a redraw of all elements using current target
   */
 	update: function update() {
+		if (!this.isActive()) return;
 		var self = this;
 		this._updateGlobalScale();
 		self._drawConnections(this._targetId);
@@ -223,8 +224,6 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			_this._colors.push(d3.rgb(color));
 		});
 		this._globalColorScale = d3.scaleLinear().domain(this.options.globalScaleDomain).interpolate(d3.interpolateRgb).range(this._colors);
-
-		console.log('this.options.globalScaleDomain: ' + this.options.globalScaleDomain);
 	},
 
 	_drawConnections: function _drawConnections(targetId) {
