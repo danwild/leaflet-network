@@ -136,6 +136,7 @@ layerControl.addOverlay(networkLayer, 'Network Example');
 |`setDisplayMode`|`mode: {String}`|one of: `SOURCE`, `SINK`, `ANY`, `BOTH`|
 |`getPointById`|`id: {String}`|Get a node by id|
 |`isActive`||Check if layer is active on the map|
+|`getLatLngBounds`||Returns leaflet [LatLngBounds](https://leafletjs.com/reference-1.3.2.html#latlngbounds) of the layer|
 |`getConnectionsDomain`|`clipped: {Boolean}`, Optional: `data: {Object}`|Get the domain (min/max) of values in the data array (defaults to current)|
 
 ## data format

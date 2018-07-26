@@ -132,6 +132,14 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 	},
 
 	/**
+	 * Returns leaflet LatLngBounds of the layer
+	 */
+	getLatLngBounds () {
+		if (!this.options.data || !this._map) return null;
+		return L.latLngBounds(this.options.data.map((d) => { return [d.properties.lat, d.properties.lon]; }));
+	},
+
+	/**
 	 * Update the layer with new data
 	 * @param {Object} data
 	 */
