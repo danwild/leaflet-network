@@ -4,7 +4,8 @@
 It uses [d3.js v4](http://d3js.org) to visualise the network connections on a `L.SVG` layer.
 
 Node connectivity weights can be represented:
-- **GLOBAL:** node connection weights are scaled against all other connections in the matrix.
+- **GLOBAL:** node connection weights are scaled against all other connections in the matrix
+(only `SOURCE` / downstream `displayMode` supported).
 - **LOCAL:** node connection weights are scaled to only the connections of the selected target.
 - **NONE:** connection weights are ignored, simplified display.
 

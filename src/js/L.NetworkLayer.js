@@ -295,7 +295,6 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				// GLOBAL visible
 				} else if (self.options.weightMode === 'GLOBAL' && inRange) {
 
-					// all weighted on same scale
 					color = self._globalColorScale(conValue);
 					opacity = self.options.lineOpacity;
 
@@ -341,7 +340,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				var targetPoint = map.latLngToLayerPoint(site.properties.LatLng);
 				var conPoint = map.latLngToLayerPoint(conSite.properties.LatLng);
 
-				// add line with even listeners
+				// add line with event listeners
 				if (self.options.weightMode !== 'NONE' && color !== self.options.lineInactiveColor) {
 					svgGroup2.append("line")
 						.attr("class", "connection")
@@ -399,12 +398,15 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 			// a single color scale, combined domain for ALL
 		} else {
 			var nodes;
+			var inactive;
 			switch (self.options.displayMode) {
 				case 'SINK':
 					nodes = sinks;
+					inactive = sources;
 					break;
 				case 'SOURCE':
 					nodes = sources;
+					inactive = sinks;
 					break;
 				case 'ANY':
 					nodes = sinks.concat(sources);
@@ -420,6 +422,28 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 				.range(self._colors);
 
 			this._drawLocalWeightedNodes(nodes, colorScale, svgGroup2, null);
+
+			// draw related but inactive connections
+			if (inactive) {
+				inactive.forEach(function(node){
+					var conKeys = Object.keys(node.connections);
+					conKeys.forEach(function(conKey){
+						var conSite = self.getPointById(conKey);
+						if(!conSite || !node.connections[conKey]) return;
+						var targetPoint = self._map.latLngToLayerPoint(node.properties.LatLng);
+						var conPoint = self._map.latLngToLayerPoint(conSite.properties.LatLng);
+						svgGroup2.append("line")
+							.attr("class", "connection")
+							.attr("x1", targetPoint.x)
+							.attr("y1", targetPoint.y)
+							.attr("x2", conPoint.x)
+							.attr("y2", conPoint.y)
+							.attr("stroke-width",  2)
+							.attr("stroke-opacity", 0.2)
+							.attr("stroke", self.options.lineInactiveColor)
+					});
+				});
+			}
 		}
 
 	},
