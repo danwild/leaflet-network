@@ -234,7 +234,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		this.options.colorScale.forEach(function (color) {
 			_this._colors.push(d3.rgb(color));
 		});
-		this._globalColorScale = d3.scaleLinear().domain(this.options.globalScaleDomain).interpolate(d3.interpolateRgb).range(this._colors);
+		this._globalColorScale = d3.scaleLinear().domain(this.options.globalScaleDomain).interpolate(d3.interpolateHcl).range(this._colors);
 	},
 
 	_drawConnections: function _drawConnections(targetId) {
@@ -350,11 +350,11 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		if (self.options.displayMode === 'BOTH') {
 
 			var localSinkDomain = this.getConnectionsDomain(true, sinks);
-			var sinkScale = d3.scaleLinear().domain(localSinkDomain).interpolate(d3.interpolateRgb).range(self._colors);
+			var sinkScale = d3.scaleLinear().domain(localSinkDomain).interpolate(d3.interpolateHcl).range(self._colors);
 			this._drawLocalWeightedNodes(sinks, sinkScale, svgGroup2, self.options.lineDashStyle);
 
 			var localSourceDomain = this.getConnectionsDomain(true, sources);
-			var sourceScale = d3.scaleLinear().domain(localSourceDomain).interpolate(d3.interpolateRgb).range(self._colors);
+			var sourceScale = d3.scaleLinear().domain(localSourceDomain).interpolate(d3.interpolateHcl).range(self._colors);
 			this._drawLocalWeightedNodes(sources, sourceScale, svgGroup2, null);
 
 			// a single color scale, combined domain for ALL

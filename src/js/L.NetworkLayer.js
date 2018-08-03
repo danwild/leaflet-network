@@ -239,7 +239,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		}
 		this.options.colorScale.forEach((color) => { this._colors.push(d3.rgb(color)); });
 		this._globalColorScale = d3.scaleLinear().domain(this.options.globalScaleDomain)
-			.interpolate(d3.interpolateRgb)
+			.interpolate(d3.interpolateHcl)
 			.range(this._colors);
 	},
 
@@ -385,13 +385,13 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 
 			const localSinkDomain = this.getConnectionsDomain(true, sinks);
 			const sinkScale = d3.scaleLinear().domain(localSinkDomain)
-				.interpolate(d3.interpolateRgb)
+				.interpolate(d3.interpolateHcl)
 				.range(self._colors);
 			this._drawLocalWeightedNodes(sinks, sinkScale, svgGroup2, self.options.lineDashStyle);
 
 			const localSourceDomain = this.getConnectionsDomain(true, sources);
 			const sourceScale = d3.scaleLinear().domain(localSourceDomain)
-				.interpolate(d3.interpolateRgb)
+				.interpolate(d3.interpolateHcl)
 				.range(self._colors);
 			this._drawLocalWeightedNodes(sources, sourceScale, svgGroup2, null);
 
