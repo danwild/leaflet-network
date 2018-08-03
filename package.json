@@ -1,6 +1,6 @@
 {
   "name": "leaflet-network",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "description": "Leaflet plugin to visualise arbitrary network connectivity between spatial data points",
   "main": "dist/leaflet-network.js",
   "scripts": {

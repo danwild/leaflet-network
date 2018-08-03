@@ -234,7 +234,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		this.options.colorScale.forEach(function (color) {
 			_this._colors.push(d3.rgb(color));
 		});
-		this._globalColorScale = d3.scaleLinear().domain(this.options.globalScaleDomain).interpolate(d3.interpolateHcl).range(this._colors);
+		this._globalColorScale = d3.scaleLinear().domain(this.options.globalScaleDomain).interpolate(d3.interpolateRgb).range(this._colors);
 	},
 
 	_drawConnections: function _drawConnections(targetId) {
