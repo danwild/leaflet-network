@@ -11,6 +11,7 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 		sinkColor: '#7EC891',
 		allColor: 'purple',
 		lineInactiveColor: 'grey',
+		lineInactiveOpacity: 0.2,
 		globalScaleDomain: null,
 		nodeFillColor: 'red',
 		nodeOpacity: 0.5,
@@ -438,8 +439,8 @@ L.NetworkLayer = (L.Layer ? L.Layer : L.Class).extend({
 							.attr("y1", targetPoint.y)
 							.attr("x2", conPoint.x)
 							.attr("y2", conPoint.y)
-							.attr("stroke-width",  2)
-							.attr("stroke-opacity", 0.2)
+							.attr("stroke-width",  self.options.lineWidth)
+							.attr("stroke-opacity", self.options.lineInactiveOpacity)
 							.attr("stroke", self.options.lineInactiveColor)
 					});
 				});
